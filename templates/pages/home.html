@@ -1,7 +1,9 @@
 {% extends "_base.html" %}
+{% load common_tags %}
 
 {% block title %}Home{% endblock  %}
 {% block main %}
     <h2>Welcome to Django Jokes!</h2>
     <p>Enjoy the jokes that are shared here!</p>
+    {% random_joke %}
 {% endblock  %}
