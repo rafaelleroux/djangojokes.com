@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     # Local Apps'
     'common.apps.CommonConfig',
+    'jobs.apps.JobsConfig',
     'jokes.apps.JokesConfig',
     'pages.apps.PagesConfig',
     'users.apps.UsersConfig',
