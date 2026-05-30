@@ -1,5 +1,13 @@
 from django import forms
 from datetime import datetime
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
+
+def validate_future_date(value):
+    if value < datetime.now().date():
+        raise ValidationError(
+            message=f'{value} is in the past.', code='past_date'
+        )
 
 class JobApplicationForm(forms.Form):
     first_name = forms.CharField(help_text='Please enter first name',
@@ -16,7 +24,9 @@ class JobApplicationForm(forms.Form):
                                      'placeholder': 'https://example.com',
                                      'size': '50'
                                  }
-                             ) )
+                             ),
+                             validators=[URLValidator(schemes=['http','https'])]
+                             )
     
     EMPLOYMENT_TYPE = (
         (None, '----------'),
@@ -30,7 +40,12 @@ class JobApplicationForm(forms.Form):
     start_date = forms.DateField(help_text='The earliest date you can start working.',
                                      widget=forms.SelectDateWidget(
                                          years=YEARS,
-                                     )
+                                         attrs={
+                                             'style': 'width: 31%; display: inline-block; margin: 0 1%'
+                                         }
+                                     ),
+                                     validators=[validate_future_date],
+                                     error_messages= {'past_date': 'Please enter a future date.'}
                                 )
     
     DAYS = (
@@ -41,8 +56,9 @@ class JobApplicationForm(forms.Form):
         (5, 'FRI')
     )
     
-    days = forms.MultipleChoiceField(
+    available_days = forms.TypedMultipleChoiceField(
         choices=DAYS,
+        coerce=int,
         help_text='Select all days that you can work.',
         widget=forms.CheckboxSelectMultiple(
             attrs={
@@ -51,7 +67,7 @@ class JobApplicationForm(forms.Form):
         ),
     )
     desired_hourly_wage = forms.DecimalField(
-        widget=forms.TextInput(
+        widget=forms.NumberInput(
             attrs={
                 'min': '10.00',
                 'max': '100.00',
@@ -67,4 +83,4 @@ class JobApplicationForm(forms.Form):
             }
         )
     )
-    check = forms.BooleanField(label='I certify that the information I have provided is true.')
+    confirmation = forms.BooleanField(label='I certify that the information I have provided is true.')
