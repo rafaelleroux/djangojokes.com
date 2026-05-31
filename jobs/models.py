@@ -42,6 +42,9 @@ class Applicant(models.Model):
     desired_hourly_wage = models.DecimalField(max_digits=5, decimal_places=2)
     cover_letter = models.TextField()
     confirmation = models.BooleanField()
+    resume = models.FileField(
+        upload_to='private/resumes', blank=True, help_text='PDFs only'
+    )
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
