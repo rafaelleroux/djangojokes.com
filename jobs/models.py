@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import models
 
+from private_storage.fields import PrivateFileField
+
 import filetype
 
 def validate_future_date(value):
@@ -49,8 +51,8 @@ class Applicant(models.Model):
     desired_hourly_wage = models.DecimalField(max_digits=5, decimal_places=2)
     cover_letter = models.TextField()
     confirmation = models.BooleanField()
-    resume = models.FileField(
-        upload_to='private/resumes', blank=True, help_text='PDFs only',
+    resume = PrivateFileField(
+        upload_to='resumes', blank=True, help_text='PDFs only',
         validators=[validate_pdf]
     )
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
