@@ -1,5 +1,6 @@
 from django.views.generic import CreateView,DeleteView,DetailView,ListView,UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -49,7 +50,7 @@ class JokeUpdateView(SuccessMessageMixin, UserPassesTestMixin, UpdateView):
         obj = self.get_object()
         return self.request.user == obj.user
 
-    
+@login_required    
 def vote(request, slug):
     user = request.user # The logged-in user (or AnonymousUser).
     joke = Joke.objects.get(slug=slug) # The joke instance.
